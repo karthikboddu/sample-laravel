@@ -35,6 +35,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
  
     //Route::get('user', 'ApiController@getAuthUser');
  	Route::get('user', 'ApiController@getAuthenticatedUser');
+	Route::get('getAllUsers', 'ApiController@getAllUsers');
     Route::get('products', 'ProductController@index');
     Route::get('products/{id}', 'ProductController@show');
     Route::post('products', 'ProductController@store');
@@ -43,7 +44,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::get('closed', 'DataController@closed');
 
 
-	Route::get('chatMessages', 'ChatMessage@ChatMessageByUser');
+	//Route::get('conversations/query/{id}', 'ChatMessageController@ConversationsByUser');
+    
+    Route::get('conversations/query/{id}', 'ChatMessageController@ConversationsChatListByUser');
+	Route::get('chatMessages', 'ChatMessageController@ChatMessageByUser');
+	Route::get('getAllUserchatMessages', 'ChatMessageController@getAllUserChatMessages');
+	Route::post('messages', 'ChatMessageController@store');
+	Route::get('conversations/getRecentMessagesByUser', 'ChatMessageController@getRecentMessagesByUser');
 });
 
 
@@ -69,9 +76,12 @@ Route::get('/channels/{channel}/messages', function (App\Channel $channel) {
 Route::post('/channels/{channel}/messages', function (App\Channel $channel) {
 
     $message = Message::forceCreate([
+	'user_id'=>'3',
+	'sender_id'=>'1',
         'channel_id' => $channel->id,
         'author_username' => request('username'),
         'message' => request('message'),
+
     ]);
 
     // Dispatch an event. Will be broadcasted over Redis.
