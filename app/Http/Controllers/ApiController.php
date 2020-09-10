@@ -40,14 +40,15 @@ class ApiController extends Controller
 
         $input = $request->only('email', 'password');
         $jwt_token = null;
- 
+  	
         if (!$jwt_token = JWTAuth::attempt($input)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid Email or Password',
             ]);
         }
- 
+
+
         return response()->json([
             'status' => true,
             'token' => $jwt_token,
@@ -80,6 +81,20 @@ class ApiController extends Controller
         $user = JWTAuth::authenticate($request->token);
  
         return response()->json(['user' => $user]);
+    }
+
+    public function getAllUsers(Request $request)
+    {
+                          if (! $user = JWTAuth::parseToken()->authenticate()) {
+                                    return response()->json(['user_not_found'], 404);
+                            }
+  $auser = User::select('*')
+                     ->where([['id','!=',$user->id]])
+                         ->get();
+ 
+        //$user =  User::all();
+ 
+        return response()->json(['user' => $auser]);
     }
 
         public function getAuthenticatedUser()
