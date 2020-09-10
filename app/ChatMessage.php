@@ -14,9 +14,10 @@ class ChatMessage extends Model
     {
     	return $this->belongsTo(User::class);
     }
-
+/*
     public function channels()
     {
     	return $this->belongsTo(Channel::class);
     }
+*/
 }

@@ -17,11 +17,7 @@ class CreateChatMessagesTable extends Migration
     $table->increments('id');
 	$table->unsignedInteger('user_id');
 	$table->unsignedInteger('receiver_id');
-    $table->unsignedInteger('channel_id');
-            $table->foreign('channel_id')
-                    ->references('id')
-                    ->on('channels')
-                    ->onDelete('cascade');
+
     $table->string('author_username');
     $table->text('message');
     $table->timestamps();

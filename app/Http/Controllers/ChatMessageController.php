@@ -56,7 +56,7 @@ return ChatMessage::All();
 	$conversations->user_id =  $user_id;
 	$conversations->receiver_id = (string)$request->receiver_id;
 	$conversations->author_username = $request->author_username;
-        $conversations->channel_id = $request->channel_id;
+        //$conversations->channel_id = $request->channel_id;
         $conversations->message = $request->message;
         //$message->quantity = $request->quantity;
     	//$user = User::join('chat_messages', 'chat_messages.user_id', '=', 'users.id')
@@ -137,7 +137,7 @@ return ChatMessage::All();
         $messages = new ChatMessage();
 	//$this->channel = $this->user->channel;
 	$user_id = (string)$this->user->id;
-	$conservations = $this->user->channel['0']->channelHasChatMessage()->get('*')->toArray();
+	$conservations = $this->user->chatMessage()->get('*')->toArray();
 	//$conservations = ChatMessage::select('*')->where([['channel_id','=',2]])->get()->toArray();
 	$a = ChatMessage::select('*')
                            ->where([['user_id','=',$user_id],['receiver_id','=', $id]])
@@ -196,7 +196,7 @@ return ChatMessage::All();
                            ->where([['receiver_id','=', $user_id]])
                            ->get();
 	$result = $a->merge($b);
-	$conservations = $this->user->channel['0']->channelHasChatMessage()->get('receiver_id')->toArray();
+	$conservations = $this->user->chatMessage()->get('receiver_id')->toArray();
  	foreach($result as $key => $eachConv){
 		if(!($eachConv['receiver_id'] == $user_id)){
 			$allUseridConv[$key] = $eachConv['receiver_id'];		
