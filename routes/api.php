@@ -51,6 +51,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 	Route::get('getAllUserchatMessages', 'ChatMessageController@getAllUserChatMessages');
 	Route::post('messages', 'ChatMessageController@store');
 	Route::get('conversations/getRecentMessagesByUser', 'ChatMessageController@getRecentMessagesByUser');
+    Route::get('conversations/query/seen/{id}', 'ChatMessageController@ConversationsChatSeenUpdateByUser');
+
+
+
+
+    Route::post('addExpensesItem', 'ExpenseController@addExpenseItemList');
+    Route::get('getExpensesList', 'ExpenseController@getExpensesListByUser');
 });
 
 

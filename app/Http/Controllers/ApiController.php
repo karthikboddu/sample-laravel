@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RegisterAuthRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
-
+use App\Events\MessageSent;
 class ApiController extends Controller
 {
     public $loginAfterSignUp = true;
@@ -19,10 +19,12 @@ class ApiController extends Controller
 	$userM = usermaster::where('userType', 'ROLE_USER')->first();
 	//return $userM;
         $user = new User();
+	$user->firstname = $request->firstname;
+	$user->lastname = $request->lastname;
         $user->username = $request->username;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-	    $user->user_master_id = $userM->id;
+	$user->user_master_id = $userM->id;
         $user->save();
  
         if ($this->loginAfterSignUp) {
@@ -47,12 +49,20 @@ class ApiController extends Controller
                 'message' => 'Invalid Email or Password',
             ]);
         }
-
-
-        return response()->json([
-            'status' => true,
-            'token' => $jwt_token,
-        ]);
+	   $updateLastLoginDetails = User::where('email',$request->email)->first();
+    	if (is_null($updateLastLoginDetails)) {
+       	    return response()->json([
+                    'success' => false,
+                    'message' => 'Could not upate login datae',
+                ]);
+    	}
+    	$updateLastLoginDetails->last_loggedin_at = date('Y-m-d H:i:s');
+    	$updateLastLoginDetails->save();
+        event(new MessageSent("userjoined", $request->email));
+            return response()->json([
+                'status' => true,
+                'token' => $jwt_token,
+            ]);
     }
  
     public function logout(Request $request)
